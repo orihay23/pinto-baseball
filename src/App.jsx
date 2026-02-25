@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import PlayerSetup from './components/PlayerSetup';
 import LineupView from './components/LineupView';
+import NameImport from './components/NameImport';
 import { generateLineup, buildSummary } from './rosterAlgorithm';
 import './App.css';
 
@@ -25,7 +26,15 @@ export default function App() {
   const [innings, setInnings] = useState(null);
   const [summary, setSummary] = useState(null);
   const [error, setError] = useState(null);
-  const [tab, setTab] = useState('setup');
+  const [tab, setTab] = useState('import');
+
+  const handleImport = useCallback((names) => {
+    setPlayers(names.map((name, i) => ({ id: `import-${Date.now()}-${i}`, name, canPlayFirst: false })));
+    setInnings(null);
+    setSummary(null);
+    setError(null);
+    setTab('setup');
+  }, []);
 
   const handleGenerate = useCallback(() => {
     try {
@@ -51,6 +60,12 @@ export default function App() {
         </div>
         <div className="tab-bar">
           <button
+            className={`tab-btn ${tab === 'import' ? 'active' : ''}`}
+            onClick={() => setTab('import')}
+          >
+            Paste Names
+          </button>
+          <button
             className={`tab-btn ${tab === 'setup' ? 'active' : ''}`}
             onClick={() => setTab('setup')}
           >
@@ -68,6 +83,10 @@ export default function App() {
 
       <main className="app-main">
         {error && <div className="error-banner">{error}</div>}
+
+        {tab === 'import' && (
+          <NameImport onImport={handleImport} />
+        )}
 
         {tab === 'setup' && (
           <PlayerSetup
