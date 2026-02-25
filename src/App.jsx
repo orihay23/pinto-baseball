@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import PlayerSetup from './components/PlayerSetup';
 import LineupView from './components/LineupView';
 import NameImport from './components/NameImport';
-import { generateLineup, buildSummary } from './rosterAlgorithm';
+import { generateLineup, buildSummary, generateBattingOrder } from './rosterAlgorithm';
 import './App.css';
 
 const DEFAULT_PLAYERS = [
@@ -25,6 +25,7 @@ export default function App() {
   const [players, setPlayers] = useState(DEFAULT_PLAYERS);
   const [innings, setInnings] = useState(null);
   const [summary, setSummary] = useState(null);
+  const [battingOrder, setBattingOrder] = useState(null);
   const [error, setError] = useState(null);
   const [tab, setTab] = useState('import');
 
@@ -32,6 +33,7 @@ export default function App() {
     setPlayers(names.map((name, i) => ({ id: `import-${Date.now()}-${i}`, name, canPlayFirst: false })));
     setInnings(null);
     setSummary(null);
+    setBattingOrder(null);
     setError(null);
     setTab('setup');
   }, []);
@@ -42,6 +44,7 @@ export default function App() {
       const result = generateLineup(players);
       setInnings(result);
       setSummary(buildSummary(players, result));
+      setBattingOrder(generateBattingOrder(players));
       setTab('lineup');
     } catch (e) {
       setError(e.message);
@@ -101,6 +104,7 @@ export default function App() {
             players={players}
             innings={innings}
             summary={summary}
+            battingOrder={battingOrder}
             onBack={() => setTab('setup')}
           />
         )}
