@@ -24,7 +24,7 @@ function positionBg(pos) {
   return ZONE_COLOR[ZONE_LABEL[pos]] ?? '#f3f4f6';
 }
 
-export default function LineupView({ players, innings, summary, onBack }) {
+export default function LineupView({ players, innings, summary, battingOrder, onBack }) {
   return (
     <div className="lineup-panel">
       <div className="lineup-toolbar">
@@ -35,6 +35,21 @@ export default function LineupView({ players, innings, summary, onBack }) {
           Print
         </button>
       </div>
+
+      {/* ── Batting order ── */}
+      {battingOrder && (
+        <section className="lineup-section">
+          <h2>Batting Order</h2>
+          <ol className="batting-order-list">
+            {battingOrder.map((p) => (
+              <li key={p.id} className="batting-order-item">
+                {p.name}
+                {p.canPlayFirst && <span className="badge-1b">1B</span>}
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
 
       {/* ── Inning-by-inning grid ── */}
       <section className="lineup-section">
@@ -114,7 +129,6 @@ export default function LineupView({ players, innings, summary, onBack }) {
                 <tr key={p.id}>
                   <td className="pos-label player-name-cell">
                     {p.name}
-                    {p.canPlayFirst && <span className="badge-1b">1B</span>}
                   </td>
                   {innings.map((inn) => {
                     const pos = inn.assignment[p.id] ?? '?';
@@ -138,7 +152,7 @@ export default function LineupView({ players, innings, summary, onBack }) {
       </section>
 
       {/* ── Position totals ── */}
-      <section className="lineup-section">
+      <section className="lineup-section no-print">
         <h2>Position Totals</h2>
         <div className="inning-grid-wrapper">
           <table className="inning-table">
@@ -156,7 +170,6 @@ export default function LineupView({ players, innings, summary, onBack }) {
                 <tr key={p.id}>
                   <td className="pos-label player-name-cell">
                     {p.name}
-                    {p.canPlayFirst && <span className="badge-1b">1B</span>}
                   </td>
                   {ALL_POSITIONS.map((pos) => (
                     <td

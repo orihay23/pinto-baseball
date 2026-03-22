@@ -253,6 +253,19 @@ function greedyAssign(players, positions, playedAt) {
 }
 
 /**
+ * Generate a random batting order (Fisher-Yates shuffle).
+ * Returns a new array of players in a randomised order.
+ */
+export function generateBattingOrder(players) {
+  const order = [...players];
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  return order;
+}
+
+/**
  * Build a summary of how many innings each player spent at each position.
  */
 export function buildSummary(players, innings) {
