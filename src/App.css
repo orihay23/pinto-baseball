@@ -435,6 +435,26 @@
   background: #f1f5f9;
 }
 
+.rotate-controls {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.btn-rotate {
+  background: white;
+  border: 1px solid #cbd5e1;
+  color: #334155;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  transition: background 0.15s;
+  cursor: pointer;
+}
+
+.btn-rotate:hover {
+  background: #f1f5f9;
+}
+
 .lineup-section {
   background: white;
   border: 1px solid #e2e8f0;
@@ -492,6 +512,20 @@
 .row-infield .pos-label { background: #dbeafe; color: #1e40af; }
 .row-outfield .pos-label { background: #dcfce7; color: #15803d; }
 .row-bench .pos-label { background: #fef9c3; color: #92400e; }
+
+/* Row striping for inning grid (even rows get a slight tint over zone color) */
+.inning-table tbody tr:nth-child(even) td { filter: brightness(0.96); }
+
+/* Player schedule striping (no zone colors, so use explicit stripe) */
+.player-schedule-table tbody tr:nth-child(odd) td { background: #f8fafc; }
+.player-schedule-table tbody tr:nth-child(even) td { background: #eef2f7; }
+
+.batting-num-col {
+  width: 2rem;
+  color: #64748b;
+  font-weight: 600;
+  font-size: 0.78rem;
+}
 
 .player-cell {
   font-weight: 500;

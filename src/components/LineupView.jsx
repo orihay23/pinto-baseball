@@ -24,13 +24,21 @@ function positionBg(pos) {
   return ZONE_COLOR[ZONE_LABEL[pos]] ?? '#f3f4f6';
 }
 
-export default function LineupView({ players, innings, summary, battingOrder, onBack }) {
+export default function LineupView({ players, innings, summary, battingOrder, onBack, onRotateLeft, onRotateRight }) {
   return (
     <div className="lineup-panel">
       <div className="lineup-toolbar">
         <button className="btn-back" onClick={onBack}>
           ← Edit Players
         </button>
+        <div className="rotate-controls">
+          <button className="btn-rotate" onClick={onRotateLeft} title="Rotate left: last inning becomes first">
+            ← Rotate
+          </button>
+          <button className="btn-rotate" onClick={onRotateRight} title="Rotate right: first inning becomes last">
+            Rotate →
+          </button>
+        </div>
         <button className="btn-print" onClick={() => window.print()}>
           Print
         </button>
@@ -113,9 +121,10 @@ export default function LineupView({ players, innings, summary, battingOrder, on
       <section className="lineup-section">
         <h2>Player Schedule</h2>
         <div className="inning-grid-wrapper">
-          <table className="inning-table">
+          <table className="inning-table player-schedule-table">
             <thead>
               <tr>
+                <th className="pos-header batting-num-col">#</th>
                 <th className="pos-header">Player</th>
                 {innings.map((inn) => (
                   <th key={inn.inning}>Inn {inn.inning}</th>
@@ -125,8 +134,9 @@ export default function LineupView({ players, innings, summary, battingOrder, on
               </tr>
             </thead>
             <tbody>
-              {(battingOrder ?? players).map((p) => (
+              {(battingOrder ?? players).map((p, i) => (
                 <tr key={p.id}>
+                  <td className="batting-num-col">{i + 1}</td>
                   <td className="pos-label player-name-cell">
                     {p.name}
                   </td>
