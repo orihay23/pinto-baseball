@@ -585,11 +585,25 @@
 
 /* ── Print ── */
 @media print {
+  @page { size: landscape; margin: 0.5in; }
+
   .app-header,
   .lineup-toolbar,
-  .btn-print,
-  .btn-back { display: none; }
-  .lineup-panel { gap: 1rem; }
-  .inning-table { font-size: 0.75rem; }
+  .no-print,
+  .legend { display: none; }
+
   .app-main { padding: 0; }
+  .lineup-panel { gap: 0.5rem; }
+  .lineup-section {
+    border: 1px solid #ccc;
+    border-radius: 0;
+    padding: 0.5rem;
+    break-inside: avoid;
+  }
+  .lineup-section h2 { font-size: 0.8rem; margin-bottom: 0.4rem; }
+  .inning-table { font-size: 0.7rem; }
+  .inning-table th,
+  .inning-table td { padding: 0.2rem 0.4rem; }
+  .batting-order-list { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 0.2rem; }
+  .batting-order-item { padding: 0.2rem 0.5rem; font-size: 0.75rem; }
 }

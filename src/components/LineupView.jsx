@@ -152,7 +152,7 @@ export default function LineupView({ players, innings, summary, battingOrder, on
       </section>
 
       {/* ── Position totals ── */}
-      <section className="lineup-section">
+      <section className="lineup-section no-print">
         <h2>Position Totals</h2>
         <div className="inning-grid-wrapper">
           <table className="inning-table">
