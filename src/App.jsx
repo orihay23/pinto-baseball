@@ -38,6 +38,19 @@ export default function App() {
     setTab('setup');
   }, []);
 
+  const handleRotate = useCallback((direction) => {
+    setInnings((prev) => {
+      if (!prev) return prev;
+      const assignments = prev.map((inn) => inn.assignment);
+      const rotated = direction === 'left'
+        ? [...assignments.slice(1), assignments[0]]
+        : [assignments[assignments.length - 1], ...assignments.slice(0, -1)];
+      const next = prev.map((inn, i) => ({ ...inn, assignment: rotated[i] }));
+      setSummary(buildSummary(players, next));
+      return next;
+    });
+  }, [players]);
+
   const handleGenerate = useCallback(() => {
     try {
       setError(null);
@@ -106,6 +119,8 @@ export default function App() {
             summary={summary}
             battingOrder={battingOrder}
             onBack={() => setTab('setup')}
+            onRotateLeft={() => handleRotate('left')}
+            onRotateRight={() => handleRotate('right')}
           />
         )}
       </main>

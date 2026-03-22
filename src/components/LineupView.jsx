@@ -24,13 +24,21 @@ function positionBg(pos) {
   return ZONE_COLOR[ZONE_LABEL[pos]] ?? '#f3f4f6';
 }
 
-export default function LineupView({ players, innings, summary, battingOrder, onBack }) {
+export default function LineupView({ players, innings, summary, battingOrder, onBack, onRotateLeft, onRotateRight }) {
   return (
     <div className="lineup-panel">
       <div className="lineup-toolbar">
         <button className="btn-back" onClick={onBack}>
           ← Edit Players
         </button>
+        <div className="rotate-controls">
+          <button className="btn-rotate" onClick={onRotateLeft} title="Rotate left: last inning becomes first">
+            ← Rotate
+          </button>
+          <button className="btn-rotate" onClick={onRotateRight} title="Rotate right: first inning becomes last">
+            Rotate →
+          </button>
+        </div>
         <button className="btn-print" onClick={() => window.print()}>
           Print
         </button>
