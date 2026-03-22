@@ -129,7 +129,6 @@ export default function LineupView({ players, innings, summary, battingOrder, on
                 <tr key={p.id}>
                   <td className="pos-label player-name-cell">
                     {p.name}
-                    {p.canPlayFirst && <span className="badge-1b">1B</span>}
                   </td>
                   {innings.map((inn) => {
                     const pos = inn.assignment[p.id] ?? '?';
@@ -171,7 +170,6 @@ export default function LineupView({ players, innings, summary, battingOrder, on
                 <tr key={p.id}>
                   <td className="pos-label player-name-cell">
                     {p.name}
-                    {p.canPlayFirst && <span className="badge-1b">1B</span>}
                   </td>
                   {ALL_POSITIONS.map((pos) => (
                     <td
