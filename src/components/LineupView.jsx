@@ -120,8 +120,8 @@ export default function LineupView({ players, innings, summary, battingOrder, on
                 {innings.map((inn) => (
                   <th key={inn.inning}>Inn {inn.inning}</th>
                 ))}
-                <th>Played</th>
-                <th>Bench</th>
+                <th className="no-print">Played</th>
+                <th className="no-print">Bench</th>
               </tr>
             </thead>
             <tbody>
@@ -142,8 +142,8 @@ export default function LineupView({ players, innings, summary, battingOrder, on
                       </td>
                     );
                   })}
-                  <td className="stat-cell">{summary[p.id].played}</td>
-                  <td className="stat-cell bench-stat">{summary[p.id].bench}</td>
+                  <td className="stat-cell no-print">{summary[p.id].played}</td>
+                  <td className="stat-cell bench-stat no-print">{summary[p.id].bench}</td>
                 </tr>
               ))}
             </tbody>
