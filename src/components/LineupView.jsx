@@ -113,9 +113,10 @@ export default function LineupView({ players, innings, summary, battingOrder, on
       <section className="lineup-section">
         <h2>Player Schedule</h2>
         <div className="inning-grid-wrapper">
-          <table className="inning-table">
+          <table className="inning-table player-schedule-table">
             <thead>
               <tr>
+                <th className="pos-header batting-num-col">#</th>
                 <th className="pos-header">Player</th>
                 {innings.map((inn) => (
                   <th key={inn.inning}>Inn {inn.inning}</th>
@@ -125,8 +126,9 @@ export default function LineupView({ players, innings, summary, battingOrder, on
               </tr>
             </thead>
             <tbody>
-              {(battingOrder ?? players).map((p) => (
+              {(battingOrder ?? players).map((p, i) => (
                 <tr key={p.id}>
+                  <td className="batting-num-col">{i + 1}</td>
                   <td className="pos-label player-name-cell">
                     {p.name}
                   </td>
