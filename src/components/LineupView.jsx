@@ -38,7 +38,7 @@ export default function LineupView({ players, innings, summary, battingOrder, on
 
       {/* ── Batting order ── */}
       {battingOrder && (
-        <section className="lineup-section">
+        <section className="lineup-section no-print">
           <h2>Batting Order</h2>
           <ol className="batting-order-list">
             {battingOrder.map((p) => (
@@ -125,7 +125,7 @@ export default function LineupView({ players, innings, summary, battingOrder, on
               </tr>
             </thead>
             <tbody>
-              {players.map((p) => (
+              {(battingOrder ?? players).map((p) => (
                 <tr key={p.id}>
                   <td className="pos-label player-name-cell">
                     {p.name}
