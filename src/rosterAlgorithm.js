@@ -192,10 +192,21 @@ function pickBest(pool, count, zone, playedAt) {
  * Handles 1B restriction if firstBaseEligible is provided.
  */
 function assignPositions(players, positions, assignment, playedAt, firstBaseEligible) {
-  // Handle 1B restriction
   let remaining = [...players];
   let remainingPos = [...positions];
 
+  // Handle C restriction: prefer players who haven't caught yet
+  if (remainingPos.includes('C')) {
+    const neverCaught = remaining.filter((p) => (playedAt[p.id]['C'] || 0) === 0);
+    const pool = neverCaught.length > 0 ? neverCaught : remaining;
+    pool.sort((a, b) => (playedAt[a.id]['C'] || 0) - (playedAt[b.id]['C'] || 0));
+    const picked = pool[0];
+    assignment[picked.id] = 'C';
+    remaining = remaining.filter((p) => p.id !== picked.id);
+    remainingPos = remainingPos.filter((pos) => pos !== 'C');
+  }
+
+  // Handle 1B restriction: only eligible players
   if (firstBaseEligible && remainingPos.includes('1B')) {
     const eligibleFor1B = remaining.filter(
       (p) => firstBaseEligible.includes(p.id)
