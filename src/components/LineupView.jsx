@@ -61,7 +61,7 @@ export default function LineupView({ players, innings, summary, battingOrder, on
 
       {/* ── Inning-by-inning grid ── */}
       <section className="lineup-section">
-        <h2>Inning-by-Inning Lineup</h2>
+        <h2>Positions by Inning</h2>
         <div className="inning-grid-wrapper">
           <table className="inning-table">
             <thead>
@@ -119,7 +119,7 @@ export default function LineupView({ players, innings, summary, battingOrder, on
 
       {/* ── Player-by-inning grid ── */}
       <section className="lineup-section">
-        <h2>Player Schedule</h2>
+        <h2>Batting Order</h2>
         <div className="inning-grid-wrapper">
           <table className="inning-table player-schedule-table">
             <thead>
