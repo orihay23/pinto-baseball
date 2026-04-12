@@ -62,12 +62,16 @@ export function generateLineup(players) {
     const assignment = {};
 
     // ---- Step 1: Choose who sits ----
+    const forcedBench = inning === 0
+      ? players.filter((p) => p.benchFirst).map((p) => p.id)
+      : [];
     const sitters = chooseSitters(
       players,
       benchCount,
       lastBench,
       benchPerInning,
-      inning
+      inning,
+      forcedBench
     );
     sitters.forEach((id) => {
       assignment[id] = 'BENCH';
@@ -147,31 +151,25 @@ export function generateLineup(players) {
 
 /**
  * Choose which players sit this inning.
+ * forcedBench: player IDs that must sit (used for inning 1 late arrivals).
  */
-function chooseSitters(players, benchCount, lastBench, count, inningIndex) {
+function chooseSitters(players, benchCount, lastBench, count, inningIndex, forcedBench = []) {
   if (count === 0) return [];
 
-  // Sort candidates: prefer players who haven't sat yet (or sat least),
-  // but NEVER pick someone who sat last inning.
-  const eligible = players.filter((p) => !lastBench[p.id]);
+  // Seed with forced players (up to count), then fill remainder normally.
+  const forced = forcedBench.slice(0, count);
+  const remaining = count - forced.length;
 
-  // Sort by bench count descending (most rested first), then by id for stability
-  const sorted = [...eligible].sort((a, b) => {
-    const diff = benchCount[a.id] - benchCount[b.id];
-    if (diff !== 0) return diff; // fewer bench stints first (opposite – pick those with fewer to spread)
-    return a.id.localeCompare(b.id);
-  });
-
-  // We want equal bench time: pick those with fewest bench innings
-  // But also distribute fairly – rotate who sits
-  // Use a secondary sort: rotate by player index offset by inning
+  const eligible = players.filter(
+    (p) => !lastBench[p.id] && !forced.includes(p.id)
+  );
   const withScore = eligible.map((p) => ({
     p,
-    score: benchCount[p.id] * 1000 + players.indexOf(p), // primary: fewer bench stints
+    score: benchCount[p.id] * 1000 + players.indexOf(p),
   }));
   withScore.sort((a, b) => a.score - b.score);
 
-  return withScore.slice(0, count).map((x) => x.p.id);
+  return [...forced, ...withScore.slice(0, remaining).map((x) => x.p.id)];
 }
 
 /**

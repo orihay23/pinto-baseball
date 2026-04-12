@@ -10,7 +10,7 @@ export default function PlayerSetup({ players, setPlayers, onGenerate }) {
     if (!name) return;
     setPlayers((prev) => [
       ...prev,
-      { id: String(nextId++), name, canPlayFirst: false },
+      { id: String(nextId++), name, canPlayFirst: false, benchFirst: false },
     ]);
     setNewName('');
   };
@@ -27,6 +27,14 @@ export default function PlayerSetup({ players, setPlayers, onGenerate }) {
     );
   };
 
+  const toggleBenchFirst = (id) => {
+    setPlayers((prev) =>
+      prev.map((p) =>
+        p.id === id ? { ...p, benchFirst: !p.benchFirst } : p
+      )
+    );
+  };
+
   const updateName = (id, name) => {
     setPlayers((prev) =>
       prev.map((p) => (p.id === id ? { ...p, name } : p))
@@ -37,7 +45,6 @@ export default function PlayerSetup({ players, setPlayers, onGenerate }) {
     if (e.key === 'Enter') addPlayer();
   };
 
-  const onField = players.length >= 10;
   const canGenerate = players.length >= 10;
 
   return (
@@ -71,7 +78,8 @@ export default function PlayerSetup({ players, setPlayers, onGenerate }) {
 
       <div className="player-list-header">
         <span>Name</span>
-        <span className="col-1b">Can play 1B</span>
+        <span className="col-toggle">Can play 1B</span>
+        <span className="col-toggle">Late / Bench Inn. 1</span>
         <span className="col-remove"></span>
       </div>
 
@@ -91,6 +99,16 @@ export default function PlayerSetup({ players, setPlayers, onGenerate }) {
                 onChange={() => toggleFirst(p.id)}
               />
               <span className="toggle-track">
+                <span className="toggle-thumb" />
+              </span>
+            </label>
+            <label className="toggle-1b">
+              <input
+                type="checkbox"
+                checked={p.benchFirst ?? false}
+                onChange={() => toggleBenchFirst(p.id)}
+              />
+              <span className={`toggle-track ${p.benchFirst ? 'toggle-track--late' : ''}`}>
                 <span className="toggle-thumb" />
               </span>
             </label>

@@ -247,7 +247,7 @@
 
 .player-list-header {
   display: grid;
-  grid-template-columns: 1fr 90px 36px;
+  grid-template-columns: 1fr 90px 90px 36px;
   padding: 0 0.5rem 0 2.25rem;
   font-size: 0.75rem;
   font-weight: 600;
@@ -268,7 +268,7 @@
 
 .player-row {
   display: grid;
-  grid-template-columns: 1.5rem 1fr 90px 36px;
+  grid-template-columns: 1.5rem 1fr 90px 90px 36px;
   align-items: center;
   gap: 0.5rem;
   background: white;
@@ -330,6 +330,10 @@
 
 .toggle-1b input:checked ~ .toggle-track {
   background: #2563eb;
+}
+
+.toggle-track--late {
+  background: #f59e0b !important;
 }
 
 .toggle-thumb {
