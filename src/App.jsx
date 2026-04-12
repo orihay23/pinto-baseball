@@ -30,7 +30,7 @@ export default function App() {
   const [tab, setTab] = useState('import');
 
   const handleImport = useCallback((names) => {
-    setPlayers(names.map((name, i) => ({ id: `import-${Date.now()}-${i}`, name, canPlayFirst: false })));
+    setPlayers(names.map((name, i) => ({ id: `import-${Date.now()}-${i}`, name, canPlayFirst: false, benchFirst: false })));
     setInnings(null);
     setSummary(null);
     setBattingOrder(null);
