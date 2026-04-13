@@ -623,7 +623,7 @@
 
 /* ── Print ── */
 @media print {
-  @page { size: landscape; margin: 0.5in; }
+  @page { size: landscape; margin: 0.35in; }
 
   .app-header,
   .lineup-toolbar,
@@ -631,17 +631,29 @@
   .legend { display: none; }
 
   .app-main { padding: 0; }
-  .lineup-panel { gap: 0.5rem; }
+
+  /* Two tables side by side */
+  .lineup-panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem;
+    align-items: start;
+  }
+
   .lineup-section {
     border: 1px solid #ccc;
     border-radius: 0;
-    padding: 0.5rem;
+    padding: 0.4rem;
     break-inside: avoid;
   }
-  .lineup-section h2 { font-size: 0.8rem; margin-bottom: 0.4rem; }
-  .inning-table { font-size: 0.7rem; }
+  .lineup-section h2 { font-size: 0.72rem; margin-bottom: 0.3rem; padding-bottom: 0.2rem; }
+
+  .inning-table { font-size: 0.62rem; }
   .inning-table th,
-  .inning-table td { padding: 0.2rem 0.4rem; }
-  .batting-order-list { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 0.2rem; }
-  .batting-order-item { padding: 0.2rem 0.5rem; font-size: 0.75rem; }
+  .inning-table td { padding: 0.12rem 0.3rem; }
+
+  /* Keep player name column from blowing out the batting order table */
+  .player-name-cell { max-width: 80px; overflow: hidden; white-space: nowrap; }
+
+  .batting-num-col { width: 1.2rem; }
 }
