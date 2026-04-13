@@ -232,14 +232,20 @@ function assignPositions(players, positions, assignment, playedAt, firstBaseElig
 /**
  * Greedy position assignment: for each position (sorted by scarcity of eligible players),
  * pick the player who has played that position least.
+ * Players who have already played a position twice receive a large penalty so they
+ * are only chosen if there is genuinely no other option.
  */
 function greedyAssign(players, positions, playedAt) {
   const result = {};
   const usedPlayers = new Set();
   const shuffledPositions = [...positions];
 
-  // Sort positions by how many times they've been played (rarest first)
+  // Sort positions: most constrained first (most players already at 2+ plays),
+  // then by total plays ascending as a tiebreaker.
   shuffledPositions.sort((a, b) => {
+    const constA = players.reduce((s, p) => s + ((playedAt[p.id][a] || 0) >= 2 ? 1 : 0), 0);
+    const constB = players.reduce((s, p) => s + ((playedAt[p.id][b] || 0) >= 2 ? 1 : 0), 0);
+    if (constA !== constB) return constB - constA;
     const totalA = players.reduce((s, p) => s + (playedAt[p.id][a] || 0), 0);
     const totalB = players.reduce((s, p) => s + (playedAt[p.id][b] || 0), 0);
     return totalA - totalB;
@@ -249,10 +255,14 @@ function greedyAssign(players, positions, playedAt) {
     const available = players.filter((p) => !usedPlayers.has(p.id));
     if (available.length === 0) break;
 
-    // Pick the player with least experience at this position
-    available.sort(
-      (a, b) => (playedAt[a.id][pos] || 0) - (playedAt[b.id][pos] || 0)
-    );
+    // Heavily penalise anyone who has already played this position twice or more
+    available.sort((a, b) => {
+      const countA = playedAt[a.id][pos] || 0;
+      const countB = playedAt[b.id][pos] || 0;
+      const scoreA = countA >= 2 ? countA + 100 : countA;
+      const scoreB = countB >= 2 ? countB + 100 : countB;
+      return scoreA - scoreB;
+    });
     const picked = available[0];
     result[picked.id] = pos;
     usedPlayers.add(picked.id);
