@@ -81,33 +81,46 @@ export function generateLineup(players) {
     // ---- Step 2: Assign field positions ----
     const fielders = players.filter((p) => !sitters.includes(p.id));
 
-    // Separate preferred zone based on last inning
-    const preferInfield = fielders.filter(
-      (p) => lastZone[p.id] === 'outfield' || lastZone[p.id] === 'bench' || lastZone[p.id] === null
-    );
-    const preferOutfield = fielders.filter(
-      (p) => lastZone[p.id] === 'infield'
-    );
+    // Three groups by what they did last inning:
+    //   mustGoInfield  – were in outfield; must swap to infield (max 4, always fits in 6 spots)
+    //   canGoEither    – were on bench or haven't played; no strong zone preference
+    //   preferOutfield – were in infield; prefer to swap to outfield
+    const mustGoInfield   = fielders.filter((p) => lastZone[p.id] === 'outfield');
+    const canGoEither     = fielders.filter((p) => lastZone[p.id] === 'bench' || lastZone[p.id] === null);
+    const preferOutfield  = fielders.filter((p) => lastZone[p.id] === 'infield');
 
-    // We need 6 infielders and 4 outfielders
     let infieldPlayers = [];
     let outfieldPlayers = [];
 
-    // First satisfy the swap preference
-    if (preferInfield.length >= 6 && preferOutfield.length >= 4) {
-      // Perfect – pick the best candidates from each group
-      infieldPlayers = pickBest(preferInfield, 6, 'infield', playedAt);
-      outfieldPlayers = pickBest(preferOutfield, 4, 'outfield', playedAt);
-    } else if (preferInfield.length >= 6) {
-      infieldPlayers = pickBest(preferInfield, 6, 'infield', playedAt);
-      outfieldPlayers = fielders.filter((p) => !infieldPlayers.includes(p));
-    } else if (preferOutfield.length >= 4) {
-      outfieldPlayers = pickBest(preferOutfield, 4, 'outfield', playedAt);
-      infieldPlayers = fielders.filter((p) => !outfieldPlayers.includes(p));
+    // Guarantee: all outfield-last players go to infield this inning
+    infieldPlayers = [...mustGoInfield];
+    const infieldSlotsLeft = 6 - infieldPlayers.length;
+
+    if (canGoEither.length >= infieldSlotsLeft) {
+      // Enough bench/null players to fill the remaining infield slots
+      infieldPlayers = [...infieldPlayers, ...pickBest(canGoEither, infieldSlotsLeft, 'infield', playedAt)];
     } else {
-      // Just do best effort
-      infieldPlayers = pickBest(fielders, 6, 'infield', playedAt);
-      outfieldPlayers = fielders.filter((p) => !infieldPlayers.includes(p));
+      // Need to pull some infield-last players into infield to fill the spots
+      infieldPlayers = [
+        ...infieldPlayers,
+        ...canGoEither,
+        ...pickBest(preferOutfield, infieldSlotsLeft - canGoEither.length, 'infield', playedAt),
+      ];
+    }
+    outfieldPlayers = fielders.filter((p) => !infieldPlayers.includes(p));
+
+    // Guarantee at least one 1B-eligible player in the infield.
+    // If zone rotation pushed all eligible players to outfield, swap one in.
+    const eligible1BIds = players.filter((p) => p.canPlayFirst).map((p) => p.id);
+    if (eligible1BIds.length > 0 && !infieldPlayers.some((p) => eligible1BIds.includes(p.id))) {
+      const toMoveIn = outfieldPlayers.find((p) => eligible1BIds.includes(p.id));
+      if (toMoveIn) {
+        // Swap out an infield player who was infield last inning (they'd prefer outfield anyway)
+        const toMoveOut = infieldPlayers.find((p) => lastZone[p.id] === 'infield')
+          ?? infieldPlayers[infieldPlayers.length - 1];
+        infieldPlayers = infieldPlayers.filter((p) => p.id !== toMoveOut.id).concat(toMoveIn);
+        outfieldPlayers = outfieldPlayers.filter((p) => p.id !== toMoveIn.id).concat(toMoveOut);
+      }
     }
 
     // ---- Step 3: Assign specific positions ----
@@ -193,11 +206,17 @@ function assignPositions(players, positions, assignment, playedAt, firstBaseElig
   let remaining = [...players];
   let remainingPos = [...positions];
 
-  // Handle C restriction: prefer players who haven't caught yet
+  // Handle C restriction: prefer players who haven't caught yet, deprioritize 1B-eligible
   if (remainingPos.includes('C')) {
     const neverCaught = remaining.filter((p) => (playedAt[p.id]['C'] || 0) === 0);
     const pool = neverCaught.length > 0 ? neverCaught : remaining;
-    pool.sort((a, b) => (playedAt[a.id]['C'] || 0) - (playedAt[b.id]['C'] || 0));
+    pool.sort((a, b) => {
+      // Prefer non-1B-eligible so eligible players are available for 1B
+      const aElig = firstBaseEligible && firstBaseEligible.includes(a.id) ? 1 : 0;
+      const bElig = firstBaseEligible && firstBaseEligible.includes(b.id) ? 1 : 0;
+      if (aElig !== bElig) return aElig - bElig;
+      return (playedAt[a.id]['C'] || 0) - (playedAt[b.id]['C'] || 0);
+    });
     const picked = pool[0];
     assignment[picked.id] = 'C';
     remaining = remaining.filter((p) => p.id !== picked.id);
