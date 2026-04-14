@@ -632,12 +632,10 @@
 
   .app-main { padding: 0; }
 
-  /* Positions (wider, 6 name columns) left · Batting Order (narrower) right */
   .lineup-panel {
-    display: grid;
-    grid-template-columns: 58fr 42fr;
+    display: flex;
+    flex-direction: column;
     gap: 0.4rem;
-    align-items: start;
   }
 
   .lineup-section {
@@ -648,13 +646,11 @@
   }
   .lineup-section h2 { font-size: 0.75rem; margin-bottom: 0.25rem; padding-bottom: 0.2rem; }
 
-  /* Positions by Inning: 6 inning columns each holding a full player name */
-  .positions-section .inning-table { font-size: 0.63rem; }
+  .positions-section .inning-table { font-size: 0.7rem; }
   .positions-section .inning-table th,
-  .positions-section .inning-table td { padding: 0.1rem 0.2rem; white-space: nowrap; }
+  .positions-section .inning-table td { padding: 0.1rem 0.25rem; white-space: nowrap; }
 
-  /* Batting Order: only one name column, rest are short position codes */
-  .player-schedule-table { font-size: 0.72rem; }
+  .player-schedule-table { font-size: 0.75rem; }
   .player-schedule-table th,
   .player-schedule-table td { padding: 0.12rem 0.3rem; }
 
