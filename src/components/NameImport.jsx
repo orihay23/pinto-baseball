@@ -1,5 +1,16 @@
 import { useState } from 'react';
 
+function cryptoShuffle(arr) {
+  const a = [...arr];
+  const bytes = new Uint32Array(a.length);
+  crypto.getRandomValues(bytes);
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = bytes[i] % (i + 1);
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 export default function NameImport({ onImport }) {
   const [text, setText] = useState('');
 
@@ -13,8 +24,12 @@ export default function NameImport({ onImport }) {
     onImport(names);
   };
 
+  const handleRandomize = () => {
+    if (names.length === 0) return;
+    setText(cryptoShuffle(names).join('\n'));
+  };
+
   const handleKeyDown = (e) => {
-    // Allow Tab to insert spaces instead of leaving the textarea
     if (e.key === 'Tab') {
       e.preventDefault();
     }
@@ -43,14 +58,24 @@ export default function NameImport({ onImport }) {
             ? `${names.length} player${names.length !== 1 ? 's' : ''}${names.length < 10 ? ' — need at least 10' : ''}`
             : 'No names yet'}
         </span>
-        <button
-          className="btn-import"
-          onClick={handleImport}
-          disabled={names.length === 0}
-        >
-          Load Players →
-        </button>
+        <div className="import-actions">
+          <button
+            className="btn-randomize"
+            onClick={handleRandomize}
+            disabled={names.length === 0}
+          >
+            Shuffle
+          </button>
+          <button
+            className="btn-import"
+            onClick={handleImport}
+            disabled={names.length === 0}
+          >
+            Load Players →
+          </button>
+        </div>
       </div>
     </div>
   );
 }
+
