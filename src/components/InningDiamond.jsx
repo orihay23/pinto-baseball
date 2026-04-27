@@ -4,7 +4,7 @@ const COORDS = {
   P:    { x: 90,  y: 107, anchor: 'middle' },
   C:    { x: 90,  y: 163, anchor: 'middle' },
   '1B': { x: 143, y: 114, anchor: 'start'  },
-  '2B': { x: 90,  y: 66,  anchor: 'middle' },
+  '2B': { x: 116, y: 92,  anchor: 'start'  },
   '3B': { x: 37,  y: 114, anchor: 'end'    },
   SS:   { x: 60,  y: 90,  anchor: 'end'    },
   LF:   { x: 16,  y: 42,  anchor: 'start'  },
