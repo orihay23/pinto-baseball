@@ -1,4 +1,5 @@
 import { ALL_POSITIONS, POSITIONS } from '../rosterAlgorithm';
+import InningDiamond from './InningDiamond';
 
 const ZONE_COLOR = {
   infield: '#dbeafe',
@@ -59,8 +60,23 @@ export default function LineupView({ players, innings, summary, battingOrder, on
         </section>
       )}
 
+      {/* ── Diamond diagrams ── */}
+      <section className="lineup-section diamond-section">
+        <h2>Field Assignments by Inning</h2>
+        <div className="diamond-grid">
+          {innings.map((inn) => (
+            <InningDiamond
+              key={inn.inning}
+              inningNumber={inn.inning}
+              assignment={inn.assignment}
+              players={players}
+            />
+          ))}
+        </div>
+      </section>
+
       {/* ── Inning-by-inning grid ── */}
-      <section className="lineup-section positions-section">
+      <section className="lineup-section positions-section no-print">
         <h2>Positions by Inning</h2>
         <div className="inning-grid-wrapper">
           <table className="inning-table">
@@ -118,7 +134,7 @@ export default function LineupView({ players, innings, summary, battingOrder, on
       </section>
 
       {/* ── Player-by-inning grid ── */}
-      <section className="lineup-section">
+      <section className="lineup-section batting-order-section">
         <h2>Batting Order</h2>
         <div className="inning-grid-wrapper">
           <table className="inning-table player-schedule-table">

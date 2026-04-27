@@ -613,6 +613,21 @@
   border: 1px solid rgba(0,0,0,0.08);
 }
 
+/* ── Diamond Grid ── */
+.diamond-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.diamond-svg {
+  width: 100%;
+  height: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  display: block;
+}
+
 /* ── Batting Order ── */
 .batting-order-list {
   margin: 0;
@@ -658,11 +673,16 @@
 
   .app-main { padding: 0; }
 
+  /* Two-column: diamonds left, batting order right */
   .lineup-panel {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 57fr 43fr;
     gap: 0.4rem;
+    align-items: start;
   }
+
+  .diamond-section  { grid-column: 1; }
+  .batting-order-section { grid-column: 2; }
 
   .lineup-section {
     border: 1px solid #ccc;
@@ -672,13 +692,12 @@
   }
   .lineup-section h2 { font-size: 0.75rem; margin-bottom: 0.25rem; padding-bottom: 0.2rem; }
 
-  .positions-section .inning-table { font-size: 0.7rem; }
-  .positions-section .inning-table th,
-  .positions-section .inning-table td { padding: 0.1rem 0.25rem; white-space: nowrap; }
+  .diamond-grid { gap: 0.15rem; }
+  .diamond-svg { border: 0.5px solid #ddd; border-radius: 0; }
 
-  .player-schedule-table { font-size: 0.75rem; }
+  .player-schedule-table { font-size: 0.72rem; }
   .player-schedule-table th,
-  .player-schedule-table td { padding: 0.12rem 0.3rem; }
+  .player-schedule-table td { padding: 0.1rem 0.25rem; }
 
   .player-name-cell { white-space: nowrap; }
   .batting-num-col { width: 1.2rem; }
