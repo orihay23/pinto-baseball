@@ -291,14 +291,16 @@ function greedyAssign(players, positions, playedAt) {
 }
 
 /**
- * Generate a random batting order (Fisher-Yates shuffle).
+ * Generate a random batting order (Fisher-Yates shuffle via crypto.getRandomValues).
  * Players marked benchFirst (late arrivals) are shuffled to the end.
  */
 export function generateBattingOrder(players) {
   const shuffle = (arr) => {
     const a = [...arr];
+    const bytes = new Uint32Array(a.length);
+    crypto.getRandomValues(bytes);
     for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
+      const j = bytes[i] % (i + 1);
       [a[i], a[j]] = [a[j], a[i]];
     }
     return a;
