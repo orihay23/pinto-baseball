@@ -69,7 +69,7 @@ export default function InningDiamond({ inningNumber, assignment, players }) {
             x={x}
             y={y}
             textAnchor={anchor}
-            fontSize="7.5"
+            fontSize="9"
             fontFamily={FONT}
             fill="#000"
           >
