@@ -6,19 +6,19 @@ import { generateLineup, buildSummary, generateBattingOrder } from './rosterAlgo
 import './App.css';
 
 const DEFAULT_PLAYERS = [
-  { id: '1', name: 'Alex', canPlayFirst: true },
-  { id: '2', name: 'Bailey', canPlayFirst: false },
-  { id: '3', name: 'Cameron', canPlayFirst: true },
-  { id: '4', name: 'Dakota', canPlayFirst: false },
-  { id: '5', name: 'Emery', canPlayFirst: false },
-  { id: '6', name: 'Finley', canPlayFirst: true },
-  { id: '7', name: 'Gray', canPlayFirst: false },
-  { id: '8', name: 'Harper', canPlayFirst: false },
-  { id: '9', name: 'Indigo', canPlayFirst: false },
-  { id: '10', name: 'Jordan', canPlayFirst: true },
-  { id: '11', name: 'Kai', canPlayFirst: false },
-  { id: '12', name: 'Lane', canPlayFirst: false },
-  { id: '13', name: 'Morgan', canPlayFirst: false },
+  { id: '1',  name: 'Alex',    cannotPlayFirst: false, cannotPlayC: false },
+  { id: '2',  name: 'Bailey',  cannotPlayFirst: true,  cannotPlayC: false },
+  { id: '3',  name: 'Cameron', cannotPlayFirst: false, cannotPlayC: false },
+  { id: '4',  name: 'Dakota',  cannotPlayFirst: true,  cannotPlayC: false },
+  { id: '5',  name: 'Emery',   cannotPlayFirst: true,  cannotPlayC: false },
+  { id: '6',  name: 'Finley',  cannotPlayFirst: false, cannotPlayC: false },
+  { id: '7',  name: 'Gray',    cannotPlayFirst: true,  cannotPlayC: false },
+  { id: '8',  name: 'Harper',  cannotPlayFirst: true,  cannotPlayC: false },
+  { id: '9',  name: 'Indigo',  cannotPlayFirst: true,  cannotPlayC: false },
+  { id: '10', name: 'Jordan',  cannotPlayFirst: false, cannotPlayC: false },
+  { id: '11', name: 'Kai',     cannotPlayFirst: true,  cannotPlayC: false },
+  { id: '12', name: 'Lane',    cannotPlayFirst: true,  cannotPlayC: false },
+  { id: '13', name: 'Morgan',  cannotPlayFirst: true,  cannotPlayC: false },
 ];
 
 export default function App() {
@@ -30,7 +30,7 @@ export default function App() {
   const [tab, setTab] = useState('import');
 
   const handleImport = useCallback((names) => {
-    setPlayers(names.map((name, i) => ({ id: `import-${Date.now()}-${i}`, name, canPlayFirst: false, benchFirst: false })));
+    setPlayers(names.map((name, i) => ({ id: `import-${Date.now()}-${i}`, name, cannotPlayFirst: false, cannotPlayC: false, benchFirst: false })));
     setInnings(null);
     setSummary(null);
     setBattingOrder(null);
