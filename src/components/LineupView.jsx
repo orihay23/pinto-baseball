@@ -53,7 +53,8 @@ export default function LineupView({ players, innings, summary, battingOrder, on
             {battingOrder.map((p) => (
               <li key={p.id} className="batting-order-item">
                 {p.name}
-                {p.canPlayFirst && <span className="badge-1b">1B</span>}
+                {p.cannotPlayFirst && <span className="badge-restrict">No 1B</span>}
+                {p.cannotPlayC && <span className="badge-restrict">No C</span>}
               </li>
             ))}
           </ol>

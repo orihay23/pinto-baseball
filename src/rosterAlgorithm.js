@@ -111,7 +111,7 @@ export function generateLineup(players) {
 
     // Guarantee at least one 1B-eligible player in the infield.
     // If zone rotation pushed all eligible players to outfield, swap one in.
-    const eligible1BIds = players.filter((p) => p.canPlayFirst).map((p) => p.id);
+    const eligible1BIds = players.filter((p) => !p.cannotPlayFirst).map((p) => p.id);
     if (eligible1BIds.length > 0 && !infieldPlayers.some((p) => eligible1BIds.includes(p.id))) {
       const toMoveIn = outfieldPlayers.find((p) => eligible1BIds.includes(p.id));
       if (toMoveIn) {
@@ -124,14 +124,15 @@ export function generateLineup(players) {
     }
 
     // ---- Step 3: Assign specific positions ----
-    // Infield – handle 1B constraint first
+    const cannotPlayCIds = players.filter((p) => p.cannotPlayC).map((p) => p.id);
     const infieldPositions = [...POSITIONS.infield];
     assignPositions(
       infieldPlayers,
       infieldPositions,
       assignment,
       playedAt,
-      players.filter((p) => p.canPlayFirst).map((p) => p.id)
+      players.filter((p) => !p.cannotPlayFirst).map((p) => p.id),
+      cannotPlayCIds
     );
 
     // Outfield
@@ -140,7 +141,8 @@ export function generateLineup(players) {
       [...POSITIONS.outfield],
       assignment,
       playedAt,
-      null
+      null,
+      cannotPlayCIds
     );
 
     // ---- Step 4: Update tracking ----
@@ -202,14 +204,16 @@ function pickBest(pool, count, zone, playedAt) {
  * Assign players to positions, minimizing repeated positions.
  * Handles 1B restriction if firstBaseEligible is provided.
  */
-function assignPositions(players, positions, assignment, playedAt, firstBaseEligible) {
+function assignPositions(players, positions, assignment, playedAt, firstBaseEligible, cannotPlayCIds = []) {
   let remaining = [...players];
   let remainingPos = [...positions];
 
-  // Handle C restriction: prefer players who haven't caught yet, deprioritize 1B-eligible
+  // Handle C restriction: exclude cannotPlayC players, prefer non-1B-eligible, spread duty evenly
   if (remainingPos.includes('C')) {
-    const neverCaught = remaining.filter((p) => (playedAt[p.id]['C'] || 0) === 0);
-    const pool = neverCaught.length > 0 ? neverCaught : remaining;
+    const canCatch = remaining.filter((p) => !cannotPlayCIds.includes(p.id));
+    const base = canCatch.length > 0 ? canCatch : remaining; // fallback if everyone is excluded
+    const neverCaught = base.filter((p) => (playedAt[p.id]['C'] || 0) === 0);
+    const pool = neverCaught.length > 0 ? neverCaught : base;
     pool.sort((a, b) => {
       // Prefer non-1B-eligible so eligible players are available for 1B
       const aElig = firstBaseEligible && firstBaseEligible.includes(a.id) ? 1 : 0;

@@ -10,7 +10,7 @@ export default function PlayerSetup({ players, setPlayers, onGenerate }) {
     if (!name) return;
     setPlayers((prev) => [
       ...prev,
-      { id: String(nextId++), name, canPlayFirst: false, benchFirst: false },
+      { id: String(nextId++), name, cannotPlayFirst: false, cannotPlayC: false, benchFirst: false },
     ]);
     setNewName('');
   };
@@ -19,19 +19,21 @@ export default function PlayerSetup({ players, setPlayers, onGenerate }) {
     setPlayers((prev) => prev.filter((p) => p.id !== id));
   };
 
-  const toggleFirst = (id) => {
+  const toggleCannotFirst = (id) => {
     setPlayers((prev) =>
-      prev.map((p) =>
-        p.id === id ? { ...p, canPlayFirst: !p.canPlayFirst } : p
-      )
+      prev.map((p) => (p.id === id ? { ...p, cannotPlayFirst: !p.cannotPlayFirst } : p))
+    );
+  };
+
+  const toggleCannotC = (id) => {
+    setPlayers((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, cannotPlayC: !p.cannotPlayC } : p))
     );
   };
 
   const toggleBenchFirst = (id) => {
     setPlayers((prev) =>
-      prev.map((p) =>
-        p.id === id ? { ...p, benchFirst: !p.benchFirst } : p
-      )
+      prev.map((p) => (p.id === id ? { ...p, benchFirst: !p.benchFirst } : p))
     );
   };
 
@@ -58,9 +60,6 @@ export default function PlayerSetup({ players, setPlayers, onGenerate }) {
             ? `${players.length - 10} sub${players.length - 10 !== 1 ? 's' : ''} per inning`
             : `Need at least 10`}
         </span>
-        <span className="first-count">
-          {players.filter((p) => p.canPlayFirst).length} can play 1B
-        </span>
       </div>
 
       <div className="add-player-row">
@@ -78,7 +77,8 @@ export default function PlayerSetup({ players, setPlayers, onGenerate }) {
 
       <div className="player-list-header">
         <span>Name</span>
-        <span className="col-toggle">Can play 1B</span>
+        <span className="col-toggle">No 1B</span>
+        <span className="col-toggle">No C</span>
         <span className="col-toggle">Late / Bench Inn. 1</span>
         <span className="col-remove"></span>
       </div>
@@ -95,10 +95,20 @@ export default function PlayerSetup({ players, setPlayers, onGenerate }) {
             <label className="toggle-1b">
               <input
                 type="checkbox"
-                checked={p.canPlayFirst}
-                onChange={() => toggleFirst(p.id)}
+                checked={p.cannotPlayFirst ?? false}
+                onChange={() => toggleCannotFirst(p.id)}
               />
-              <span className="toggle-track">
+              <span className={`toggle-track ${p.cannotPlayFirst ? 'toggle-track--restrict' : ''}`}>
+                <span className="toggle-thumb" />
+              </span>
+            </label>
+            <label className="toggle-1b">
+              <input
+                type="checkbox"
+                checked={p.cannotPlayC ?? false}
+                onChange={() => toggleCannotC(p.id)}
+              />
+              <span className={`toggle-track ${p.cannotPlayC ? 'toggle-track--restrict' : ''}`}>
                 <span className="toggle-thumb" />
               </span>
             </label>
